@@ -4,8 +4,8 @@ import morgan from "morgan";
 import cors from "cors"
 import dotenv from "dotenv"
 import actorRoutes from "./routes/actorRoutes.js"
-import adminRoutes from "./routes/adminRoutes.js"
-import {sql} from "./config/db.js"
+//import adminRoutes from "./routes/adminRoutes.js"
+import {sql,initDB} from "./config/db.js"
 dotenv.config()
 import { aj } from "./lib/arcjet.js";
 
@@ -22,8 +22,18 @@ app.use(cors())
 
 
 app.use("/api",actorRoutes)
-app.use("/api",adminRoutes)
+//app.use("/api",adminRoutes)
 
-  app.listen(PORT,()=>{
+
+
+
+
+  
+app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`);
+     initDB();
   })
+
+
+  //
+  

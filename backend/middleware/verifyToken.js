@@ -6,7 +6,7 @@ export const verifyToken=async(req,res,next)=>
 {
   try{
     const auHeader=req.headers['authorization']
-    const token=auHeader && auHeader.split('')[1]
+    const token=auHeader && auHeader.split(" ")[1]
     console.log('authorization header',auHeader)
     if(!token)
     {

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const BASE_URL="http://localhost:5004";
+const BASE_URL="http://localhost:5005";
 
 export const useProductStore = create((set,get) => ({
   products: [],
