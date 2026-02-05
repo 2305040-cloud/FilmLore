@@ -4,6 +4,7 @@ import morgan from "morgan";
 import cors from "cors"
 import dotenv from "dotenv"
 import actorRoutes from "./routes/actorRoutes.js"
+import userRoutes from "./routes/userRoutes.js"
 //import adminRoutes from "./routes/adminRoutes.js"
 import {sql,initDB} from "./config/db.js"
 dotenv.config()
@@ -22,7 +23,7 @@ app.use(cors())
 
 
 app.use("/api",actorRoutes)
-//app.use("/api",adminRoutes)
+app.use("/api/user",userRoutes)
 
 
 

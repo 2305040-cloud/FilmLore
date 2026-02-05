@@ -1,8 +1,9 @@
 import { sql } from "../config/db.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from "bcryptjs";
-import UAParser from "ua-parser-js";
+//import UAParser from "ua-parser-js";
 import axios from "axios";
+import dotenv from "dotenv";
 dotenv.config();
 
 const generateToken=(user)=>
@@ -24,16 +25,16 @@ export const signUp=async(req,res)=>
 {
     try{
         const{UserName,Password,FullName,Role,DOB,Email,ProfilePicture}=req.body;
-        if(!fullName|| !userName || !email || !Password)
+        if(!FullName|| !UserName || !Email || !Password )
         {
             return res.status(400).json({message:"Missing required fields"});
         }
     
 
     const existing=await sql`
-       SELECT UserName
-       FROM SystemUser
-       WHERE UserName=${userName}
+       SELECT username
+       FROM systemuser
+       WHERE username=${UserName}
     `;
     if(existing.length)
     {
@@ -41,18 +42,19 @@ export const signUp=async(req,res)=>
     }
 
     const created=await sql`
-     INSERT INTO SystemUser (UserName,Password,FullName,Role,DateOfBirth,Email,ProfilePicture)
-     VALUES (${UserName},${Password},${FullName},${Role},${DOB},${Email},${ProfilePicture})
+     INSERT INTO SystemUser (username,password,fullname,role,dateofbirth,email,profilepicture)
+     VALUES (${UserName},${Password},${FullName},'user',${DOB},${Email},${ProfilePicture})
+     RETURNING username,email,role
     `;
     const user=created[0];
     const token=generateToken(user);
-    return res.status(500).json({message:"User created",
+    return res.status(200).json({message:"User created",
                                 token,
                                 user:
                                 {
-                                   userName:user.UserName,
-                                   email:user.Email,
-                                   role:user.Role
+                                   userName:user.username,
+                                   email:user.email,
+                                   role:user.role
                                 }
     });
 }
@@ -76,9 +78,9 @@ export const signUp=async(req,res)=>
             }
 
             const row=await sql`
-            SELECT "UserName","Email","Role"
-            FROM "SystemUser"
-            WHERE "UserName"=${UserName} AND "Password"=${Password}
+            SELECT username,email,role
+            FROM systemuser
+            WHERE username=${UserName} AND password=${Password}
             `;
             
             if(!row.length)
@@ -87,6 +89,7 @@ export const signUp=async(req,res)=>
             }
 
             const user=row[0];
+     
 
             const token=generateToken(user);
 
@@ -94,9 +97,9 @@ export const signUp=async(req,res)=>
                 message:"Login successful",token,
                 user:
                 {
-                    UserName:user.UserName,
-                    Email:user.Email,
-                    Role:user.Role
+                    UserName:user.username,
+                    Email:user.email,
+                    Role:user.role
                 }
             });
 
